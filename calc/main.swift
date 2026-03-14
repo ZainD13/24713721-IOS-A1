@@ -20,24 +20,31 @@ for (index, value) in args.enumerated() {
         if let number = Int(value) {
             numbers.append(number)
         } else {
-            print("Index \(index): expected a number, got '\(value)'")
+            // number must be valid
+            fputs("Invalid number at position \(index): '\(value)'\n", stderr)
+            exit(EXIT_FAILURE)
         }
     } else {
         // odd index = operator
-        operators.append(value)
+        switch value {
+        case "+", "-", "*", "x", "X", "/", "%":
+            operators.append(value)
+        default:
+            // operator must be recognized
+            fputs("Unknown operator at position \(index): '\(value)'\n", stderr)
+            exit(EXIT_FAILURE)
+        }
     }
 }
 
-// check that numbers and operators are stored correctly
-print("Numbers: \(numbers)")
-print("Operators: \(operators)")
-
 if numbers.isEmpty {
-    // check if numbers list is empty
-    print("Numbers is empty")
+    // list cannot be empty
+    fputs("No input provided.\n", stderr)
+    exit(EXIT_FAILURE)
 } else if operators.count != numbers.count - 1 {
-    // ensure operators and numbers align (n numbers require n-1 operators)
-    print("Mismatched input: expected \(numbers.count - 1) operators, got \(operators.count).")
+    // ensure operators and numbers align
+    fputs("Mismatched input: expected \(numbers.count - 1) operators, got \(operators.count).\n", stderr)
+    exit(EXIT_FAILURE)
 } else {
     // handle multiplication, division, and modulo first
     var collapsedNumbers: [Int] = [numbers[0]]
@@ -88,5 +95,5 @@ if numbers.isEmpty {
         }
     }
 
-    print("Result: \(result)")
+    print(result)
 }
